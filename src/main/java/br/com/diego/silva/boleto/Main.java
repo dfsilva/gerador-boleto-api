@@ -4,6 +4,7 @@ import br.com.caelum.stella.boleto.*;
 import br.com.caelum.stella.boleto.bancos.Bradesco;
 import br.com.caelum.stella.boleto.transformer.GeradorDeBoleto;
 import br.com.diego.silva.boleto.dto.ErrorDTO;
+import br.com.diego.silva.boleto.utils.BarcodeUtils;
 import com.google.gson.Gson;
 import spark.servlet.SparkApplication;
 
@@ -109,8 +110,7 @@ public class Main implements SparkApplication {
 
 
             var linhaDigitavel = "23793381286005649858173000063302185880000136576";
-            Banco banco = new Bradesco(getCodigoBarra(linhaDigitavel));
-
+            Banco banco = new Bradesco(BarcodeUtils.getBarcodeFromDigitableLine(linhaDigitavel));
             Boleto boleto = Boleto.novoBoleto()
                     .comBanco(banco)
                     .comDatas(datas)
@@ -133,14 +133,5 @@ public class Main implements SparkApplication {
 
     }
 
-    private static String getCodigoBarra(String linhaDigitavel) {
-        StringBuilder retorno = new StringBuilder();
-        retorno.append(linhaDigitavel, 0, 4);
-        retorno.append(linhaDigitavel, 32, 47);
-        retorno.append(linhaDigitavel, 4, 9);
-        retorno.append(linhaDigitavel, 10, 20);
-        retorno.append(linhaDigitavel, 21, 31);
-        return retorno.toString();
-    }
 
 }
