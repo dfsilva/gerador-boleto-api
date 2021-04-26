@@ -1,6 +1,6 @@
 package br.com.diego.silva.boleto.utils;
 
-public class BarcodeUtils {
+public class BoletoUtils {
 
     public static String getBarcodeFromDigitableLine(String line) {
         StringBuilder retorno = new StringBuilder();

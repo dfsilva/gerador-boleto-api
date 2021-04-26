@@ -3,8 +3,9 @@ package br.com.diego.silva.boleto;
 import br.com.caelum.stella.boleto.*;
 import br.com.caelum.stella.boleto.bancos.Bradesco;
 import br.com.caelum.stella.boleto.transformer.GeradorDeBoleto;
+import br.com.diego.silva.boleto.dto.BoletoDTO;
 import br.com.diego.silva.boleto.dto.ErrorDTO;
-import br.com.diego.silva.boleto.utils.BarcodeUtils;
+import br.com.diego.silva.boleto.utils.BoletoUtils;
 import com.google.gson.Gson;
 import spark.servlet.SparkApplication;
 
@@ -52,29 +53,22 @@ public class Main implements SparkApplication {
         });
 
 
-//        get("/boleto-exemplo", (request, response) -> {
-//
-//            Boleto boleto = new Boleto();
-//            boleto.setCodigoDeBarras();
-//
-//            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(List.of(boleto));
-//
-//            InputStream templateJasper = Main.class.getResourceAsStream("templates/boleto-sem-sacador-avalista.jasper");
-//            Map<String,Object> parametros = Map.of(JRParameter.REPORT_LOCALE, new Locale("pt", "BR"));
-//
-//            JasperPrint relatorio = JasperFillManager.fillReport(templateJasper, parametros, dataSource);
-//            response.type("application/pdf");
-//            return JasperExportManager.exportReportToPdf(relatorio);
-//        });
 
+        get("/gerar-boleto", (request, response) -> {
 
-        get("/boleto-exemplo", (request, response) -> {
+            BoletoDTO boletoDto = new Gson().fromJson(request.body(), BoletoDTO.class);
 
 
             Datas datas = Datas.novasDatas()
-                    .comDocumento(9, 4, 2021)
-                    .comProcessamento(9, 4, 2021)
-                    .comVencimento(12, 4, 2021);
+                    .comDocumento(boletoDto.dataDocumento.getDayOfMonth(),
+                            boletoDto.dataDocumento.getMonthValue(),
+                            boletoDto.dataDocumento.getYear())
+                    .comProcessamento(boletoDto.dataProcessamento.getDayOfMonth(),
+                            boletoDto.dataProcessamento.getMonthValue(),
+                            boletoDto.dataProcessamento.getYear())
+                    .comVencimento(boletoDto.dataVencimento.getDayOfMonth(),
+                            boletoDto.dataVencimento.getMonthValue(),
+                            boletoDto.dataVencimento.getYear());
 
             Endereco enderecoBeneficiario = Endereco.novoEndereco()
                     .comLogradouro("Av das Empresas, 555")
@@ -83,7 +77,6 @@ public class Main implements SparkApplication {
                     .comCidade("São Paulo")
                     .comUf("SP");
 
-            //Quem emite o boleto
             Beneficiario beneficiario = Beneficiario.novoBeneficiario()
                     .comNomeBeneficiario("QUALICORP ADM. E SERV. LTDA")
                     .comDocumento("18236120000158")
@@ -97,20 +90,17 @@ public class Main implements SparkApplication {
                     .comNossoNumero("26")
                     .comDigitoNossoNumero("0");
 
-            //Quem paga o boleto
             Pagador pagador = Pagador.novoPagador()
-                    .comNome("Janaina Martins da Silva")
-                    .comDocumento("01258701162")
+                    .comNome(boletoDto.nomePagador)
+                    .comDocumento(boletoDto.documentoPagador)
                     .comEndereco(Endereco.novoEndereco()
-                            .comLogradouro("QNJ 22 31")
-                            .comBairro("Taguatinga Norte")
-                            .comCep("72140220")
-                            .comCidade("Brasília")
-                            .comUf("DF"));
+                            .comLogradouro(boletoDto.logradouroPagador)
+                            .comBairro(boletoDto.bairroPagador)
+                            .comCep(boletoDto.cepPagador)
+                            .comCidade(boletoDto.cidadePagador)
+                            .comUf(boletoDto.ufPagador));
 
-
-            var linhaDigitavel = "23793381286005649858173000063302185880000136576";
-            Banco banco = new Bradesco(BarcodeUtils.getBarcodeFromDigitableLine(linhaDigitavel));
+            Banco banco = new Bradesco(BoletoUtils.getBarcodeFromDigitableLine(boletoDto.linhaDigitavel));
             Boleto boleto = Boleto.novoBoleto()
                     .comBanco(banco)
                     .comDatas(datas)
