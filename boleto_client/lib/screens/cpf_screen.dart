@@ -1,4 +1,4 @@
-import 'package:boleto_client/boletos_screen.dart';
+import 'package:boleto_client/screens/boletos_screen.dart';
 import 'package:boleto_client/utils/validations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -76,8 +76,8 @@ class _EmailScreenState extends State<EmailScreen> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState?.save();
-                    Navigator.of(context)
-                        .pushReplacement(MaterialPageRoute(builder: (__) => BoletosScreen(cpf: this._cpfController.text)));
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (__) => BoletosScreen(cpf: this._cpfController.text)));
                   }
                 },
               ),

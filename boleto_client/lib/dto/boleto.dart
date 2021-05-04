@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-class BoletoRequest {
+class Boleto {
   final String? linhaDigitavel;
   final DateTime? dataDocumento;
   final DateTime? dataProcessamento;
@@ -14,7 +14,7 @@ class BoletoRequest {
   final String? cidadePagador;
   final String? ufPagador;
 
-  BoletoRequest(
+  Boleto(
       {this.linhaDigitavel,
       this.dataDocumento,
       this.dataProcessamento,
@@ -44,7 +44,7 @@ class BoletoRequest {
     };
   }
 
-  BoletoRequest copyWith(
+  Boleto copyWith(
           {String? linhaDigitavel,
           DateTime? dataDocumento,
           DateTime? dataProcessamento,
@@ -56,7 +56,7 @@ class BoletoRequest {
           String? cepPagador,
           String? cidadePagador,
           String? ufPagador}) =>
-      BoletoRequest(
+      Boleto(
           linhaDigitavel: linhaDigitavel ?? this.linhaDigitavel,
           dataDocumento: dataDocumento ?? this.dataDocumento,
           dataProcessamento: dataProcessamento ?? this.dataProcessamento,

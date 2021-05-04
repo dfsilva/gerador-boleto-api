@@ -1,4 +1,4 @@
-import 'package:boleto_client/cpf_screen.dart';
+import 'package:boleto_client/screens/cpf_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {

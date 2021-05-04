@@ -12,12 +12,12 @@ dependencies:
   flutter:
     sdk: flutter
 
-  firebase_core: ^1.0.4
-  cloud_firestore: 1.0.6
+  firebase_core: 1.1.0
+  cloud_firestore: 1.0.7
   flutter_masked_text2: 0.9.1
   intl: ^0.17.0
   bot_toast: ^4.0.1
-  http: ^0.13.1
+  http: 0.13.3
   file_saver: ^0.0.6
 
 dev_dependencies:

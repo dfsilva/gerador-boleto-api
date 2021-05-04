@@ -41,6 +41,7 @@ class Api {
   static Future<dynamic> doPostDownloadPdf(
       {String url = URL, String uri = "", Map<String, dynamic> bodyParams = const {}}) async {
     print("POST $url$uri");
+    print(json.encode(bodyParams));
     try {
       return http
           .post(
@@ -50,7 +51,7 @@ class Api {
       )
           .then((response) async {
         if (response.statusCode == 200) {
-          await FileSaver.instance.saveFile("boleto", response.bodyBytes, "pdf", mimeType: MimeType.PDF);
+          return FileSaver.instance.saveFile("boleto", response.bodyBytes, "pdf", mimeType: MimeType.PDF);
         } else {
           return handleError(Exception(utf8.decode(response.bodyBytes)));
         }

@@ -7,7 +7,12 @@ import br.com.diego.silva.boleto.dto.BoletoDTO;
 import br.com.diego.silva.boleto.dto.ErrorDTO;
 import br.com.diego.silva.boleto.utils.BoletoUtils;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
 import spark.servlet.SparkApplication;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static spark.Spark.*;
 
@@ -20,26 +25,31 @@ public class Main implements SparkApplication {
     @Override
     public void init() {
 
-        staticFileLocation("/web");
-
         port(8080);
+
+        staticFileLocation("/web");
 
         options("/*",
                 (request, response) -> {
+
                     String accessControlRequestHeaders = request
                             .headers("Access-Control-Request-Headers");
                     if (accessControlRequestHeaders != null) {
                         response.header("Access-Control-Allow-Headers",
                                 accessControlRequestHeaders);
                     }
+
                     String accessControlRequestMethod = request
                             .headers("Access-Control-Request-Method");
                     if (accessControlRequestMethod != null) {
                         response.header("Access-Control-Allow-Methods",
                                 accessControlRequestMethod);
                     }
+
                     return "OK";
                 });
+
+        before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
 
         exception(Exception.class, (exception, request, response) -> {
             exception.printStackTrace();
@@ -53,11 +63,10 @@ public class Main implements SparkApplication {
         });
 
 
+        post("/gerar-boleto", (request, response) -> {
 
-        get("/gerar-boleto", (request, response) -> {
-
-            BoletoDTO boletoDto = new Gson().fromJson(request.body(), BoletoDTO.class);
-
+            BoletoDTO boletoDto = new GsonBuilder().registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>) (json, type, jsonDeserializationContext) -> LocalDate.parse(json.getAsJsonPrimitive().getAsString(), DateTimeFormatter.ofPattern("dd/MM/yyyy"))).create()
+                    .fromJson(request.body(), BoletoDTO.class);
 
             Datas datas = Datas.novasDatas()
                     .comDocumento(boletoDto.dataDocumento.getDayOfMonth(),

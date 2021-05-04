@@ -13,7 +13,7 @@ showInfo(String text) {
 
 showError(String text) {
   BotToast.showText(
-      text: text ?? "",
+      text: text,
       contentColor: Colors.red,
       duration: Duration(seconds: 5),
       clickClose: true,
