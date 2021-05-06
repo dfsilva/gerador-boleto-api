@@ -20,7 +20,10 @@ class _BoletosScreenState extends State<BoletosScreen> {
           title: Text("Boletos Gerados"),
         ),
         body: FutureBuilder(
-          future: FirebaseFirestore.instance.collection("users/${widget.cpf}/boletos").get(),
+          future: FirebaseFirestore.instance
+              .collection("users/${widget.cpf}/boletos")
+              .orderBy("dataVencimento", descending: true)
+              .get(),
           builder: (__, AsyncSnapshot<QuerySnapshot> snp) {
             if (!snp.hasData) {
               return Center(child: Text("Carregando..."));
@@ -30,7 +33,19 @@ class _BoletosScreenState extends State<BoletosScreen> {
               return Center(child: Text("Sem registros para exibir."));
             }
 
-            return Center(child: Text("Listagem"));
+            List<QueryDocumentSnapshot> documents = snp.data!.docs;
+
+            return ListView.builder(
+                itemCount: documents.length,
+                itemBuilder: (__, idx) => Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Card(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [Text(documents[idx].data()["linhaDigitavel"])],
+                        ),
+                      ),
+                    ));
           },
         ),
         bottomNavigationBar: Container(
@@ -56,7 +71,11 @@ class _BoletosScreenState extends State<BoletosScreen> {
               ],
             ),
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (__) => BoletoScreen(cpf: widget.cpf)));
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (__) => BoletoScreen(cpf: widget.cpf)))
+                  .then((_) {
+                setState(() {});
+              });
             },
           ),
         ));

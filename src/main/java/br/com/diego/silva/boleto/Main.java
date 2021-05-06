@@ -65,64 +65,63 @@ public class Main implements SparkApplication {
 
         post("/gerar-boleto", (request, response) -> {
 
-            BoletoDTO boletoDto = new GsonBuilder().registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>) (json, type, jsonDeserializationContext) -> LocalDate.parse(json.getAsJsonPrimitive().getAsString(), DateTimeFormatter.ofPattern("dd/MM/yyyy"))).create()
+            BoletoDTO dto = new GsonBuilder().registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>) (json, type, jsonDeserializationContext) -> LocalDate.parse(json.getAsJsonPrimitive().getAsString(), DateTimeFormatter.ofPattern("dd/MM/yyyy"))).create()
                     .fromJson(request.body(), BoletoDTO.class);
 
             Datas datas = Datas.novasDatas()
-                    .comDocumento(boletoDto.dataDocumento.getDayOfMonth(),
-                            boletoDto.dataDocumento.getMonthValue(),
-                            boletoDto.dataDocumento.getYear())
-                    .comProcessamento(boletoDto.dataProcessamento.getDayOfMonth(),
-                            boletoDto.dataProcessamento.getMonthValue(),
-                            boletoDto.dataProcessamento.getYear())
-                    .comVencimento(boletoDto.dataVencimento.getDayOfMonth(),
-                            boletoDto.dataVencimento.getMonthValue(),
-                            boletoDto.dataVencimento.getYear());
+                    .comDocumento(dto.dataDocumento.getDayOfMonth(),
+                            dto.dataDocumento.getMonthValue(),
+                            dto.dataDocumento.getYear())
+                    .comProcessamento(dto.dataProcessamento.getDayOfMonth(),
+                            dto.dataProcessamento.getMonthValue(),
+                            dto.dataProcessamento.getYear())
+                    .comVencimento(dto.dataVencimento.getDayOfMonth(),
+                            dto.dataVencimento.getMonthValue(),
+                            dto.dataVencimento.getYear());
 
-            Endereco enderecoBeneficiario = Endereco.novoEndereco()
-                    .comLogradouro("Av das Empresas, 555")
-                    .comBairro("Bairro Grande")
-                    .comCep("01234-555")
-                    .comCidade("São Paulo")
-                    .comUf("SP");
+            Pagador pagador = Pagador.novoPagador()
+                    .comNome(dto.nomePagador)
+                    .comDocumento(dto.documentoPagador)
+                    .comEndereco(Endereco.novoEndereco()
+                            .comLogradouro(dto.logradouroPagador)
+                            .comBairro(dto.bairroPagador)
+                            .comCep(dto.cepPagador)
+                            .comCidade(dto.cidadePagador)
+                            .comUf(dto.ufPagador));
 
             Beneficiario beneficiario = Beneficiario.novoBeneficiario()
-                    .comNomeBeneficiario("QUALICORP ADM. E SERV. LTDA")
-                    .comDocumento("18236120000158")
+                    .comNomeBeneficiario(dto.nomeBeneficiario)
+                    .comDocumento(dto.documentoBeneficiario)
                     .comAgencia("1")
                     .comDigitoAgencia("0")
                     .comCodigoBeneficiario("1435")
                     .comDigitoCodigoBeneficiario("0")
                     .comNumeroConvenio("5897")
                     .comCarteira("36")
-                    .comEndereco(enderecoBeneficiario)
+                    .comEndereco(Endereco.novoEndereco()
+                            .comLogradouro(dto.logradouroBeneficiario)
+                            .comBairro(dto.bairroBeneficiario)
+                            .comCep(dto.cepBeneficiario)
+                            .comCidade(dto.cidadeBeneficiario)
+                            .comUf(dto.ufBeneficiario))
                     .comNossoNumero("26")
                     .comDigitoNossoNumero("0");
 
-            Pagador pagador = Pagador.novoPagador()
-                    .comNome(boletoDto.nomePagador)
-                    .comDocumento(boletoDto.documentoPagador)
-                    .comEndereco(Endereco.novoEndereco()
-                            .comLogradouro(boletoDto.logradouroPagador)
-                            .comBairro(boletoDto.bairroPagador)
-                            .comCep(boletoDto.cepPagador)
-                            .comCidade(boletoDto.cidadePagador)
-                            .comUf(boletoDto.ufPagador));
-
-            Banco banco = new Bradesco(BoletoUtils.getBarcodeFromDigitableLine(boletoDto.linhaDigitavel));
+            Banco banco = new Bradesco(BoletoUtils.getBarcodeFromDigitableLine(dto.linhaDigitavel));
             Boleto boleto = Boleto.novoBoleto()
                     .comBanco(banco)
                     .comDatas(datas)
                     .comBeneficiario(beneficiario)
                     .comPagador(pagador)
-                    .comValorBoleto("1365.76")
+                    .comValorBoleto(dto.valor)
                     .comEspecieDocumento("DM")
-                    .comNumeroDoDocumento("564985873")
-                    .comInstrucoes("Mensalidade de recomposicao anual (3/12) R$ 46,84",
-                            "Mensalidade de recomposicao anual (3/12) R$ 46,84",
-                            "Sr. Caixa:", "1) Não aceitar pagamento em cheque;",
-                            "Não aceitar mais de um pagamento com o mesmo boleto;")
-                    .comLocaisDePagamento("local 1", "local 2");
+                    .comNumeroDoDocumento(dto.numeroDocumento)
+                    .comInstrucoes(dto.instrucaoLinha1,
+                            dto.instrucaoLinha2,
+                            dto.instrucaoLinha3,
+                            dto.instrucaoLinha4,
+                            dto.instrucaoLinha5)
+                    .comLocaisDePagamento(dto.localPagamento);
 
             GeradorDeBoleto gerador = new GeradorDeBoleto(boleto);
 
