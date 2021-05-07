@@ -25,9 +25,9 @@ public class Main implements SparkApplication {
     @Override
     public void init() {
 
-        port(8080);
-
         staticFileLocation("/web");
+
+        port(8080);
 
         options("/*",
                 (request, response) -> {

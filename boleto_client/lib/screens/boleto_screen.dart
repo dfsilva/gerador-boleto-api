@@ -20,79 +20,59 @@ class BoletoScreen extends StatefulWidget {
 class _BoletoScreenState extends State<BoletoScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final MaskedTextController _digitableLineController =
-      MaskedTextController(mask: "00000.00000 00000.000000 00000.000000 0 00000000000000");
   final FocusNode _digitableLineFocus = new FocusNode();
-
-  final MaskedTextController _dataDocumentoController = MaskedTextController(mask: "00/00/0000");
   final FocusNode _dataDocumentoFocus = new FocusNode();
-
-  final MaskedTextController _dataProcessamentoController = MaskedTextController(mask: "00/00/0000");
   final FocusNode _dataProcessamentoFocus = new FocusNode();
-
-  final MaskedTextController _dataVencimentoController = MaskedTextController(mask: "00/00/0000");
   final FocusNode _dataVencimentoFocus = new FocusNode();
-
-  final MoneyMaskedTextController _valorController =
-      MoneyMaskedTextController(decimalSeparator: ',', thousandSeparator: '.', leftSymbol: "R\$ ");
   final FocusNode _valorFocus = new FocusNode();
-
   final FocusNode _numeroDocumentoFocus = new FocusNode();
-  final TextEditingController _numeroDocumentoController = TextEditingController();
   final FocusNode _instrucaoLinha1Focus = new FocusNode();
-  final TextEditingController _instrucaoLinha1Controller = TextEditingController();
   final FocusNode _instrucaoLinha2Focus = new FocusNode();
-  final TextEditingController _instrucaoLinha2Controller = TextEditingController();
   final FocusNode _instrucaoLinha3Focus = new FocusNode();
-  final TextEditingController _instrucaoLinha3Controller = TextEditingController();
   final FocusNode _instrucaoLinha4Focus = new FocusNode();
-  final TextEditingController _instrucaoLinha4Controller = TextEditingController();
   final FocusNode _instrucaoLinha5Focus = new FocusNode();
-  final TextEditingController _instrucaoLinha5Controller = TextEditingController();
   final FocusNode _localPagamentoFocus = new FocusNode();
-  final TextEditingController _localPagamentoController = TextEditingController();
-
   final FocusNode _nomePagadorFocus = new FocusNode();
-  final TextEditingController _nomePagadorController = TextEditingController();
-
   final FocusNode _documentoPagadorFocus = new FocusNode();
-  final TextEditingController _documentoPagadorController = TextEditingController();
-
   final FocusNode _logradouroPagadorFocus = new FocusNode();
-  final TextEditingController _logradouroPagadorController = TextEditingController();
-
   final FocusNode _bairroPagadorFocus = new FocusNode();
-  final TextEditingController _bairroPagadorController = TextEditingController();
-
   final FocusNode _cepPagadorFocus = new FocusNode();
-  final MaskedTextController _cepPagadorController = MaskedTextController(mask: "00000-000");
-
   final FocusNode _cidadePagadorFocus = new FocusNode();
-  final TextEditingController _cidadePagadorController = TextEditingController();
-
   final FocusNode _ufPagadorFocus = new FocusNode();
-  final TextEditingController _ufPagadorController = TextEditingController();
-
   final FocusNode _nomeBeneficiarioFocus = new FocusNode();
-  final TextEditingController _nomeBeneficiarioController = TextEditingController();
-
   final FocusNode _documentoBeneficiarioFocus = new FocusNode();
-  final TextEditingController _documentoBeneficiarioController = TextEditingController();
-
   final FocusNode _logradouroBeneficiarioFocus = new FocusNode();
-  final TextEditingController _logradouroBeneficiarioController = TextEditingController();
-
   final FocusNode _bairroBeneficiarioFocus = new FocusNode();
-  final TextEditingController _bairroBeneficiarioController = TextEditingController();
-
   final FocusNode _cepBeneficiarioFocus = new FocusNode();
-  final MaskedTextController _cepBeneficiarioController = MaskedTextController(mask: "00000-000");
-
   final FocusNode _cidadeBeneficiarioFocus = new FocusNode();
-  final TextEditingController _cidadeBeneficiarioController = TextEditingController();
-
   final FocusNode _ufBeneficiarioFocus = new FocusNode();
-  final TextEditingController _ufBeneficiarioController = TextEditingController();
+
+  MaskedTextController? _digitableLineController;
+  MaskedTextController? _dataDocumentoController;
+  MaskedTextController? _dataProcessamentoController;
+  MaskedTextController? _dataVencimentoController;
+  MoneyMaskedTextController? _valorController;
+  TextEditingController? _numeroDocumentoController;
+  TextEditingController? _instrucaoLinha1Controller;
+  TextEditingController? _instrucaoLinha2Controller;
+  TextEditingController? _instrucaoLinha3Controller;
+  TextEditingController? _instrucaoLinha4Controller;
+  TextEditingController? _instrucaoLinha5Controller;
+  TextEditingController? _localPagamentoController;
+  TextEditingController? _nomePagadorController;
+  TextEditingController? _documentoPagadorController;
+  TextEditingController? _logradouroPagadorController;
+  TextEditingController? _bairroPagadorController;
+  MaskedTextController? _cepPagadorController;
+  TextEditingController? _cidadePagadorController;
+  TextEditingController? _ufPagadorController;
+  TextEditingController? _nomeBeneficiarioController;
+  TextEditingController? _documentoBeneficiarioController;
+  TextEditingController? _logradouroBeneficiarioController;
+  TextEditingController? _bairroBeneficiarioController;
+  MaskedTextController? _cepBeneficiarioController;
+  TextEditingController? _cidadeBeneficiarioController;
+  TextEditingController? _ufBeneficiarioController;
 
   Boleto? _boleto;
 
@@ -100,60 +80,77 @@ class _BoletoScreenState extends State<BoletoScreen> {
   void initState() {
     super.initState();
     this._boleto = widget.boleto ?? Boleto();
+    _digitableLineController = MaskedTextController(mask: "00000.00000 00000.000000 00000.000000 0 00000000000000");
+    _dataDocumentoController = MaskedTextController(mask: "00/00/0000");
+    _dataProcessamentoController = MaskedTextController(mask: "00/00/0000");
+    _dataVencimentoController = MaskedTextController(mask: "00/00/0000");
+    _valorController = MoneyMaskedTextController(
+        initialValue: this._boleto!.valor, decimalSeparator: ',', thousandSeparator: '.', leftSymbol: "R\$ ");
+    _numeroDocumentoController = TextEditingController(text: this._boleto?.numeroDocumento);
+    _instrucaoLinha1Controller = TextEditingController(text: this._boleto?.instrucaoLinha1);
+    _instrucaoLinha2Controller = TextEditingController(text: this._boleto?.instrucaoLinha2);
+    _instrucaoLinha3Controller = TextEditingController(text: this._boleto?.instrucaoLinha3);
+    _instrucaoLinha4Controller = TextEditingController(text: this._boleto?.instrucaoLinha4);
+    _instrucaoLinha5Controller = TextEditingController(text: this._boleto?.instrucaoLinha5);
+    _localPagamentoController = TextEditingController(text: this._boleto?.localPagamento);
+    _nomePagadorController = TextEditingController(text: this._boleto?.nomePagador);
+    _documentoPagadorController = TextEditingController(text: this._boleto?.documentoPagador);
+    _logradouroPagadorController = TextEditingController(text: this._boleto?.logradouroPagador);
+    _bairroPagadorController = TextEditingController(text: this._boleto?.bairroPagador);
+    _cepPagadorController = MaskedTextController(text: this._boleto?.cepPagador, mask: "00000-000");
+    _cidadePagadorController = TextEditingController(text: this._boleto?.cidadePagador);
+    _ufPagadorController = TextEditingController(text: this._boleto?.ufPagador);
+    _nomeBeneficiarioController = TextEditingController(text: this._boleto?.nomeBeneficiario);
+    _documentoBeneficiarioController = TextEditingController(text: this._boleto?.documentoBeneficiario);
+    _logradouroBeneficiarioController = TextEditingController(text: this._boleto?.logradouroBeneficiario);
+    _bairroBeneficiarioController = TextEditingController(text: this._boleto?.bairroBeneficiario);
+    _cepBeneficiarioController = MaskedTextController(text: this._boleto?.cepBeneficiario, mask: "00000-000");
+    _cidadeBeneficiarioController = TextEditingController(text: this._boleto?.cidadeBeneficiario);
+    _ufBeneficiarioController = TextEditingController(text: this._boleto?.ufBeneficiario);
   }
 
   @override
   void dispose() {
-    _digitableLineController.dispose();
-    _dataDocumentoController.dispose();
+    _digitableLineController?.dispose();
+    _dataDocumentoController?.dispose();
+    _dataProcessamentoController?.dispose();
+    _dataVencimentoController?.dispose();
+    _valorController?.dispose();
+    _numeroDocumentoController?.dispose();
+    _instrucaoLinha1Controller?.dispose();
+    _instrucaoLinha2Controller?.dispose();
+    _instrucaoLinha3Controller?.dispose();
+    _instrucaoLinha4Controller?.dispose();
+    _instrucaoLinha5Controller?.dispose();
+    _localPagamentoController?.dispose();
+    _cepPagadorController?.dispose();
+    _cepBeneficiarioController?.dispose();
+
     _dataDocumentoFocus.dispose();
-    _dataProcessamentoController.dispose();
     _dataProcessamentoFocus.dispose();
-    _dataVencimentoController.dispose();
     _dataVencimentoFocus.dispose();
-
-    _valorController.dispose();
     _valorFocus.dispose();
-
-    _numeroDocumentoController.dispose();
     _numeroDocumentoFocus.dispose();
-
-    _instrucaoLinha1Controller.dispose();
     _instrucaoLinha1Focus.dispose();
-
-    _instrucaoLinha2Controller.dispose();
     _instrucaoLinha2Focus.dispose();
-
-    _instrucaoLinha3Controller.dispose();
     _instrucaoLinha3Focus.dispose();
-
-    _instrucaoLinha4Controller.dispose();
     _instrucaoLinha4Focus.dispose();
-
-    _instrucaoLinha5Controller.dispose();
     _instrucaoLinha5Focus.dispose();
-
-    _localPagamentoController.dispose();
     _localPagamentoFocus.dispose();
-
     _nomePagadorFocus.dispose();
     _documentoPagadorFocus.dispose();
     _logradouroPagadorFocus.dispose();
     _bairroPagadorFocus.dispose();
-    _cepPagadorController.dispose();
     _cepPagadorFocus.dispose();
     _cidadePagadorFocus.dispose();
     _ufPagadorFocus.dispose();
-
     _nomeBeneficiarioFocus.dispose();
     _documentoBeneficiarioFocus.dispose();
     _logradouroBeneficiarioFocus.dispose();
     _bairroBeneficiarioFocus.dispose();
-    _cepBeneficiarioController.dispose();
     _cepBeneficiarioFocus.dispose();
     _cidadeBeneficiarioFocus.dispose();
     _ufBeneficiarioFocus.dispose();
-
     super.dispose();
   }
 
@@ -242,14 +239,12 @@ class _BoletoScreenState extends State<BoletoScreen> {
                             onPressed: () async {
                               DateTime? finishDate = await showDatePicker(
                                   context: context,
-                                  initialDate: this._boleto?.dataDocumento != null
-                                      ? this._boleto!.dataDocumento!
-                                      : DateTime.now(),
+                                  initialDate: DateTime.now(),
                                   firstDate: DateTime.now(),
                                   lastDate: DateTime.now().add(Duration(days: 3650)));
                               if (finishDate != null) {
                                 this._boleto = this._boleto?.copyWith(dataDocumento: finishDate);
-                                _dataDocumentoController.text = DateFormat("dd/MM/yyyy").format(finishDate);
+                                _dataDocumentoController?.text = DateFormat("dd/MM/yyyy").format(finishDate);
                                 _dataDocumentoFocus.unfocus();
                                 _dataProcessamentoFocus.requestFocus();
                               }
@@ -294,14 +289,12 @@ class _BoletoScreenState extends State<BoletoScreen> {
                             onPressed: () async {
                               DateTime? finishDate = await showDatePicker(
                                   context: context,
-                                  initialDate: this._boleto?.dataProcessamento != null
-                                      ? this._boleto!.dataProcessamento!
-                                      : DateTime.now(),
+                                  initialDate: DateTime.now(),
                                   firstDate: DateTime.now(),
                                   lastDate: DateTime.now().add(Duration(days: 3650)));
                               if (finishDate != null) {
                                 this._boleto = this._boleto?.copyWith(dataProcessamento: finishDate);
-                                _dataProcessamentoController.text = DateFormat("dd/MM/yyyy").format(finishDate);
+                                _dataProcessamentoController?.text = DateFormat("dd/MM/yyyy").format(finishDate);
                                 _dataProcessamentoFocus.unfocus();
                                 _dataVencimentoFocus.requestFocus();
                               }
@@ -346,14 +339,12 @@ class _BoletoScreenState extends State<BoletoScreen> {
                             onPressed: () async {
                               DateTime? selectedDate = await showDatePicker(
                                   context: context,
-                                  initialDate: this._boleto?.dataVencimento != null
-                                      ? this._boleto!.dataVencimento!
-                                      : DateTime.now(),
+                                  initialDate: DateTime.now(),
                                   firstDate: DateTime.now(),
                                   lastDate: DateTime.now().add(Duration(days: 3650)));
                               if (selectedDate != null) {
                                 this._boleto = this._boleto?.copyWith(dataVencimento: selectedDate);
-                                _dataVencimentoController.text = DateFormat("dd/MM/yyyy").format(selectedDate);
+                                _dataVencimentoController?.text = DateFormat("dd/MM/yyyy").format(selectedDate);
                                 _dataProcessamentoFocus.unfocus();
                                 _dataVencimentoFocus.requestFocus();
                               }
@@ -376,16 +367,16 @@ class _BoletoScreenState extends State<BoletoScreen> {
                         if (StringUtils.isBlank(value!)) {
                           return "Informe o valor";
                         }
-                        if (_valorController.numberValue <= 0.0) {
+                        if (_valorController!.numberValue <= 0.0) {
                           return "Valor deve ser maior que 0";
                         }
                         return null;
                       },
                       onSaved: (value) {
-                        this._boleto = this._boleto?.copyWith(valor: _valorController.numberValue);
+                        this._boleto = this._boleto?.copyWith(valor: _valorController!.numberValue);
                       },
                       onChanged: (value) {
-                        this._boleto = this._boleto?.copyWith(valor: _valorController.numberValue);
+                        this._boleto = this._boleto?.copyWith(valor: _valorController!.numberValue);
                       },
                       decoration: InputDecoration(
                         hintText: "Valor do boleto",
@@ -701,6 +692,7 @@ class _BoletoScreenState extends State<BoletoScreen> {
                       textInputAction: TextInputAction.next,
                       focusNode: _ufPagadorFocus,
                       controller: _ufPagadorController,
+                      maxLength: 2,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Informe a UF do pagadodor";
@@ -923,7 +915,8 @@ class _BoletoScreenState extends State<BoletoScreen> {
             onPressed: () {
               if (_formKey.currentState?.validate() ?? false) {
                 _formKey.currentState?.save();
-                Api.doPostDownloadPdf(uri: "gerar-boleto", bodyParams: this._boleto!.toJson()).then((value) {
+                Api.doPostDownloadPdf(Api.getApiUrl(), uri: "gerar-boleto", bodyParams: this._boleto!.toJson())
+                    .then((value) {
                   FirebaseFirestore.instance
                       .collection("users/${widget.cpf}/boletos")
                       .add(this._boleto!.toFirebase())

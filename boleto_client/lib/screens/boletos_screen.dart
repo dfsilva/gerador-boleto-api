@@ -1,6 +1,8 @@
+import 'package:boleto_client/dto/boleto.dart';
 import 'package:boleto_client/screens/boleto_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class BoletosScreen extends StatefulWidget {
   final String? cpf;
@@ -23,29 +25,54 @@ class _BoletosScreenState extends State<BoletosScreen> {
           future: FirebaseFirestore.instance
               .collection("users/${widget.cpf}/boletos")
               .orderBy("dataVencimento", descending: true)
-              .get(),
-          builder: (__, AsyncSnapshot<QuerySnapshot> snp) {
+              .get()
+              .then((qnp) => qnp.docs.map((e) => Boleto.fromDocument(e)).toList()),
+          builder: (__, AsyncSnapshot<List<Boleto>> snp) {
             if (!snp.hasData) {
               return Center(child: Text("Carregando..."));
             }
 
-            if (snp.data?.size == 0) {
+            if (snp.data?.length == 0) {
               return Center(child: Text("Sem registros para exibir."));
             }
 
-            List<QueryDocumentSnapshot> documents = snp.data!.docs;
+            List<Boleto> documents = snp.data!;
 
             return ListView.builder(
                 itemCount: documents.length,
-                itemBuilder: (__, idx) => Padding(
+                itemBuilder: (__, idx) {
+                  final _boleto = documents[idx];
+
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(
+                              MaterialPageRoute(builder: (__) => BoletoScreen(boleto: documents[idx], cpf: widget.cpf)))
+                          .then((___) {
+                        setState(() {});
+                      });
+                    },
+                    child: Padding(
                       padding: const EdgeInsets.all(12),
                       child: Card(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [Text(documents[idx].data()["linhaDigitavel"])],
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Número: ${_boleto.linhaDigitavel}"),
+                              SizedBox(height: 5),
+                              Text("Vencimento: ${DateFormat("dd/MM/yyyy").format(_boleto.dataVencimento!)}"),
+                              SizedBox(height: 5),
+                              Text("Beneficiário: ${_boleto.nomeBeneficiario}")
+                            ],
+                          ),
                         ),
                       ),
-                    ));
+                    ),
+                  );
+                });
           },
         ),
         bottomNavigationBar: Container(
@@ -71,9 +98,7 @@ class _BoletosScreenState extends State<BoletosScreen> {
               ],
             ),
             onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (__) => BoletoScreen(cpf: widget.cpf)))
-                  .then((_) {
+              Navigator.of(context).push(MaterialPageRoute(builder: (__) => BoletoScreen(cpf: widget.cpf))).then((_) {
                 setState(() {});
               });
             },

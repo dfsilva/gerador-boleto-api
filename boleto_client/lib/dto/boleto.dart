@@ -1,3 +1,5 @@
+import 'package:boleto_client/utils/date_utils.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class Boleto {
@@ -22,7 +24,7 @@ class Boleto {
   final String? cidadeBeneficiario;
   final String? ufBeneficiario;
 
-  final double? valor;
+  final double valor;
   final String? numeroDocumento;
 
   final String? instrucaoLinha1;
@@ -52,7 +54,7 @@ class Boleto {
       this.cepBeneficiario,
       this.cidadeBeneficiario,
       this.ufBeneficiario,
-      this.valor,
+      this.valor = 0.0,
       this.numeroDocumento,
       this.instrucaoLinha1,
       this.instrucaoLinha2,
@@ -123,6 +125,34 @@ class Boleto {
       "localPagamento": this.localPagamento,
     };
   }
+
+  static Boleto fromDocument(DocumentSnapshot doc) => Boleto(
+      linhaDigitavel: doc["linhaDigitavel"],
+      dataDocumento: parseDateTime(doc["dataDocumento"]),
+      dataProcessamento: parseDateTime(doc["dataProcessamento"]),
+      dataVencimento: parseDateTime(doc["dataVencimento"]),
+      nomePagador: doc["nomePagador"],
+      documentoPagador: doc["documentoPagador"],
+      logradouroPagador: doc["logradouroPagador"],
+      bairroPagador: doc["bairroPagador"],
+      cepPagador: doc["cepPagador"],
+      cidadePagador: doc["cidadePagador"],
+      ufPagador: doc["ufPagador"],
+      nomeBeneficiario: doc["nomeBeneficiario"],
+      documentoBeneficiario: doc["documentoBeneficiario"],
+      logradouroBeneficiario: doc["logradouroBeneficiario"],
+      bairroBeneficiario: doc["bairroBeneficiario"],
+      cepBeneficiario: doc["cepBeneficiario"],
+      cidadeBeneficiario: doc["cidadeBeneficiario"],
+      ufBeneficiario: doc["ufBeneficiario"],
+      valor: doc["valor"],
+      numeroDocumento: doc["numeroDocumento"],
+      instrucaoLinha1: doc["instrucaoLinha1"],
+      instrucaoLinha2: doc["instrucaoLinha2"],
+      instrucaoLinha3: doc["instrucaoLinha3"],
+      instrucaoLinha4: doc["instrucaoLinha4"],
+      instrucaoLinha5: doc["instrucaoLinha5"],
+      localPagamento: doc["localPagamento"]);
 
   Boleto copyWith(
           {String? linhaDigitavel,

@@ -7,17 +7,18 @@ import 'package:file_saver/file_saver.dart';
 import 'package:http/http.dart' as http;
 
 class Api {
-  static const String HOST = "http://192.168.31.39:8080";
-
-  // static const String HOST = "https://sm.diegosilva.com.br";
-  static const String URL = "$HOST/";
+  static getApiUrl() {
+    print("${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}/");
+    return "${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}/";
+    // return "http://192.168.31.39:8080/";
+  }
 
   static handleError(error) {
     showError(error.message);
     throw error;
   }
 
-  static Future<dynamic> doPost({String url = URL, String uri = "", Map<String, dynamic> bodyParams = const {}}) async {
+  static Future<dynamic> doPost(String url, {String uri = "", Map<String, dynamic> bodyParams = const {}}) async {
     print("POST $url$uri");
     try {
       return http
@@ -38,8 +39,8 @@ class Api {
     }
   }
 
-  static Future<dynamic> doPostDownloadPdf(
-      {String url = URL, String uri = "", Map<String, dynamic> bodyParams = const {}}) async {
+  static Future<dynamic> doPostDownloadPdf(String url,
+      {String uri = "", Map<String, dynamic> bodyParams = const {}}) async {
     print("POST $url$uri");
     print(json.encode(bodyParams));
     try {
@@ -61,7 +62,7 @@ class Api {
     }
   }
 
-  static Future<dynamic> doPut({String url = URL, String uri = "", Map<String, dynamic> bodyParams = const {}}) async {
+  static Future<dynamic> doPut(String url, {String uri = "", Map<String, dynamic> bodyParams = const {}}) async {
     print("PUT $url$uri");
     try {
       return http
@@ -82,7 +83,7 @@ class Api {
     }
   }
 
-  static Future<dynamic> doGet({String url = URL, String uri = "", Map<String, dynamic> params = const {}}) async {
+  static Future<dynamic> doGet(String url, {String uri = "", Map<String, dynamic> params = const {}}) async {
     print("GET $url$uri");
     try {
       return http.get(
@@ -103,7 +104,7 @@ class Api {
     }
   }
 
-  static Future<dynamic> doDelete({String url = URL, String uri = "", Map<String, dynamic> params = const {}}) async {
+  static Future<dynamic> doDelete(String url, {String uri = "", Map<String, dynamic> params = const {}}) async {
     print("DEL $url $uri");
     try {
       return http.delete(
